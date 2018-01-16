@@ -1,9 +1,14 @@
 function CanonicSop(size) {
 	this.terms = [];
+	this.minterms = [];
 	this.termsSize = size;
 	this.alpha = ['x', 'y', 'z', 's', 't', 'v'];
 
-	this.push = num => this.terms.push(new Termine(this, num));
+	this.push = num => {
+		const term = new Termine(this, num);
+		this.terms.push(term);
+		this.minterms.push(term);
+	};
 
 	// Operazione terminale
 	this.min = () => {
@@ -21,6 +26,8 @@ function CanonicSop(size) {
 						current.touched = true;
 						now.touched = true;
 						el.ignore(ver[1]);
+						el.minterms = current.minterms.concat(now.minterms);
+						el.dontCare = false;
 						if (!el.isPresent(lst)) {
 							lst.push(el);
 						}
@@ -33,18 +40,40 @@ function CanonicSop(size) {
 			this.terms = lst;
 			lst = [];
 		}
+		// Reduce ripetition in minterms
 		this.terms = newTerms.concat(this.terms);
+		this.terms.forEach(t => {
+			t.minterms = t.minterms.filter((min, pos) => {
+				return t.minterms.indexOf(min) === pos;
+			});
+		});
+		// Build table
+		const arr = [];
+		this.terms.forEach(t => {
+			t.minterms.forEach(n => {
+				if (arr[n] === undefined) {
+					arr[n] = 1;
+				} else {
+					arr[n]++;
+				}
+			});
+		});
 	};
 
 	this.toString = () => {
 		return this.terms.map(x => x.toString()).join(' + ');
 	};
 
-	function Termine(su, num, mask) {
+	function Termine(su, num, opts) {
+		opts = opts || {};
 		const MASKCOMPLETA = (2 ** su.termsSize) - 1;
 		this.num = num;
-		this.mask = mask || MASKCOMPLETA;
+		this.mask = opts.mask || MASKCOMPLETA;
 		this.touched = false;
+		this.dontCare = opts.dontCare || false;
+		if (!this.dontCare) {
+			this.minterms = [num];
+		}
 
 		this.ignore = n => {
 			this.mask -= 2 ** n;
@@ -67,7 +96,12 @@ function CanonicSop(size) {
 		};
 
 		this.clone = () => {
-			return new Termine(su, this.num, this.mask);
+			const opts = {mask: this.mask,
+				dontCare: this.dontCare
+			};
+			const t = new Termine(su, this.num, opts);
+			t.minterms = this.minterms;
+			return t;
 		};
 
 		this.toString = () => {
@@ -107,21 +141,18 @@ function CanonicSop(size) {
 			const newNum = t.get() | this.get();
 			return new Termine(su, newNum, newMask);
 		};
-
-		this.subtraction = t => {
-			// Todo
-		};
 	}
 }
 
 const sop = new CanonicSop(4);
+sop.push(1);
 sop.push(3);
-sop.push(2);
-sop.push(7);
 sop.push(6);
+sop.push(7);
 sop.push(15);
-sop.push(13);
+sop.push(14);
 sop.push(9);
-sop.push(11);
+sop.push(8);
+sop.push(10);
 sop.min();
 console.log(sop.toString());
