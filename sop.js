@@ -1,13 +1,13 @@
 function CanonicSop(size) {
 	this.terms = [];
-	this.minterms = [];
+	this.allMinterms = [];
 	this.termsSize = size;
 	this.alpha = ['x', 'y', 'z', 's', 't', 'v'];
 
 	this.push = num => {
 		const term = new Termine(this, num);
 		this.terms.push(term);
-		this.minterms.push(term);
+		this.allMinterms.push(num);
 	};
 
 	// Operazione terminale
@@ -52,12 +52,37 @@ function CanonicSop(size) {
 		this.terms.forEach(t => {
 			t.minterms.forEach(n => {
 				if (arr[n] === undefined) {
-					arr[n] = 1;
+					arr[n] = [t];
 				} else {
-					arr[n]++;
+					arr[n].push(t);
 				}
 			});
 		});
+		// Find essential minterms
+		const essential = new Set();
+		const mints = this.allMinterms.slice(0);
+		while (mints[0] !== undefined) {
+			let lst = [];
+			mints.forEach(n => {
+				lst = arr[n].concat(lst);
+			});
+			const occurrence = lst.map(x => {
+				return lst.reduce((a, b) => {
+					return a + (b === x);
+				}, 0);
+			});
+			let max = 0;
+			for (let x = 1; x < occurrence.length; x++) {
+				if (occurrence[max] < occurrence[x]) {
+					max = x;
+				}
+			}
+			essential.add(lst[max]);
+			lst[max].minterms.forEach(m => {
+				mints.splice(mints.indexOf(m), 1);
+			});
+		}
+		this.terms = Array.from(essential);
 	};
 
 	this.toString = () => {
