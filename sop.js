@@ -19,6 +19,10 @@ function CanonicSop(size, opts) {
 		this.terms.push(term);
 	};
 
+	this.pushDontCare = num => {
+		this.push(num, 'dc');
+	};
+
 	// Operazione terminale
 	this.min = () => {
 		const newTerms = [];
