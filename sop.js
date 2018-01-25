@@ -4,6 +4,7 @@ function CanonicSop(size, opts) {
 	this.allMinterms = [];
 	this.termsSize = size;
 	this.alpha = opts.alpha || ['x', 'y', 'z', 's', 't', 'v'];
+	this.alpha = this.alpha.slice(0, size).reverse();
 
 	this.push = (num, dc) => {
 		const opts = {};
@@ -145,13 +146,13 @@ function CanonicSop(size, opts) {
 			for (let x = 0; x < su.termsSize; x++) {
 				if (mask & 1) {
 					const alpha = su.alpha[x];
-					const concat = n & 1 ? alpha : '\'' + alpha;
+					const concat = n & 1 ? alpha : alpha + '\'';
 					str += concat;
 				}
 				n >>= 1;
 				mask >>= 1;
 			}
-			return str;
+			return str.split('').reverse().join('');
 		};
 
 		this.equalsTo = t => {
@@ -188,5 +189,5 @@ sop.push(14);
 sop.push(9);
 sop.push(8);
 sop.push(10);
-sop.min();
+// Sop.min();
 console.log(sop.toString());
