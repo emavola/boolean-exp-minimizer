@@ -4,10 +4,17 @@ function CanonicSop(size) {
 	this.termsSize = size;
 	this.alpha = ['x', 'y', 'z', 's', 't', 'v'];
 
-	this.push = num => {
-		const term = new Termine(this, num);
+	this.push = (num, dc) => {
+		const opts = {};
+		if (dc === undefined) {
+			this.allMinterms.push(num);
+		} else if (dc === 'dc') {
+			opts.dontCare = true;
+		} else {
+			throw new Error('Invalid input');
+		}
+		const term = new Termine(this, num, opts);
 		this.terms.push(term);
-		this.allMinterms.push(num);
 	};
 
 	// Operazione terminale
@@ -95,6 +102,7 @@ function CanonicSop(size) {
 		this.num = num;
 		this.mask = opts.mask || MASKCOMPLETA;
 		this.touched = false;
+		this.minterms = [];
 		this.dontCare = opts.dontCare || false;
 		if (!this.dontCare) {
 			this.minterms = [num];
