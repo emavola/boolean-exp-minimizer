@@ -3,7 +3,7 @@ function CanonicSop(size, opts) {
 	this.terms = [];
 	this.allMinterms = [];
 	this.termsSize = size;
-	this.alpha = opts.alpha.reverse() || ['x', 'y', 'z', 's', 't', 'v'];
+	this.alpha = opts.alpha || ['x', 'y', 'z', 's', 't', 'v'];
 
 	this.push = (num, dc) => {
 		const opts = {};
