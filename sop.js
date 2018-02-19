@@ -99,7 +99,11 @@ function CanonicSop(size, opts) {
 	};
 
 	this.toString = () => {
-		return this.terms.map(x => x.toString()).join(' + ');
+		if (this.terms.length === 0) {
+			return 0;
+		}
+		const str = this.terms.map(x => x.toString()).join(' + ');
+		return str === '' ? 1 : str;
 	};
 
 	function Termine(su, num, opts) {
@@ -183,15 +187,14 @@ function CanonicSop(size, opts) {
 	}
 }
 
-const sop = new CanonicSop(4);
+const sop = new CanonicSop(3);
 sop.push(1);
+sop.push(2);
 sop.push(3);
+sop.push(4);
+sop.push(5);
 sop.push(6);
 sop.push(7);
-sop.push(15);
-sop.push(14);
-sop.push(9);
-sop.push(8);
-sop.push(10);
-// Sop.min();
+sop.push(0);
+sop.min();
 console.log(sop.toString());
