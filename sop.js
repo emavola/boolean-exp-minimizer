@@ -5,6 +5,7 @@ function CanonicSop(size, opts) {
 	this.termsSize = size;
 	this.alpha = opts.alpha || ['x', 'y', 'z', 's', 't', 'v'];
 	this.alpha = this.alpha.slice(0, size).reverse();
+	this.name = opts.name;
 
 	this.push = (num, dc) => {
 		const opts = {};
@@ -99,11 +100,12 @@ function CanonicSop(size, opts) {
 	};
 
 	this.toString = () => {
+		const name = this.name === undefined ? '' : this.name + ' = ';
 		if (this.terms.length === 0) {
-			return 0;
+			return name + 0;
 		}
 		const str = this.terms.map(x => x.toString()).join(' + ');
-		return str === '' ? 1 : str;
+		return str === '' ? name + 1 : name + str;
 	};
 
 	function Termine(su, num, opts) {
