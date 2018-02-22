@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/emavola/boolean-exp-minimizer.git"
   },
-  "author": "",
+  "author": "Emanuele Volanti",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/emavola/boolean-exp-minimizer/issues"
