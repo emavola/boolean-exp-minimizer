@@ -68,3 +68,12 @@ The binary rappresentation of a minterm.
 ### .pushDontCare(num)
 
 It allows to push a *don't care* minterm. 
+
+## Authors
+
+* **Emanuele Volanti** - [emavola](https://github.com/emavola)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
